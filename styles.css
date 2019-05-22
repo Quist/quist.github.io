@@ -1,54 +1,52 @@
 body {
-    font-family: 'Source Sans Pro', arial, serif;
+    font-family: sans-serif;
+    background: beige
 }
 
 .container {
-    width:700px; margin:0 auto;
+  display: flex;
+  flex-direction: column-reverse;
+  max-width: 700px;
+  margin: auto;
 }
 
 .header {
-    text-align: center;
     margin-top: 70px;
-    border-bottom: 2px solid darkgray;
-    padding-left: 40px;
-    padding-right: 40px;
-    padding-bottom: 20px;
+    text-align: center;
 }
 
 .links {
-    margin-top: 45px;
-    text-align: center;
+    margin-top: 40px;
+    height: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
 }
 
-a.button {
-    border: none;
-    padding: 1rem 2rem;
-    margin: 0;
-    text-decoration: none;
-    background: #0069ed;
-    color: #ffffff;
-    font-family: sans-serif;
-    font-size: 1rem;
-    cursor: pointer;
-    text-align: center;
-    transition: background 250ms ease-in-out,
-    transform 150ms ease;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-
-    margin-right: 35px;
+a {
+  margin-right: 25px;
+  font-size: large;
+  color: cornflowerblue;
+  border-bottom: 1px solid cornflowerblue;
+  text-decoration: none;
 }
 
-a.button:hover,
-a.button:focus {
-    background: #0053ba;
+a:hover {
+  font-size: 24px;
+  transition-property: font-size, border-bottom;
+  transition-duration: 2s;
+  border-bottom: 1px solid transparent;
+  margin-top: 40px;
 }
 
-a.button:focus {
-    outline: 1px solid #fff;
-    outline-offset: -4px;
+.box {
 }
 
-a.button:active {
-    transform: scale(0.99);
+
+.un {
+  transition: 300ms;
+}
+
+.un:hover {
+  border-color: black;
 }
