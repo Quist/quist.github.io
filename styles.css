@@ -1,6 +1,7 @@
 body {
-    font-family: sans-serif;
-    background: beige
+    font-family: 'Roboto', sans-serif;
+    background: #211f1d;
+    color: #d9d4d5;
 }
 
 .container {
@@ -26,8 +27,7 @@ body {
 a {
   margin-right: 25px;
   font-size: large;
-  color: cornflowerblue;
-  border-bottom: 1px solid cornflowerblue;
+  color: #d9d4d5;
   text-decoration: none;
 }
 
@@ -36,6 +36,7 @@ a:hover {
   transition-property: font-size, border-bottom;
   transition-duration: 2s;
   border-bottom: 1px solid transparent;
+    text-decoration: none;
 }
 
 .box {
