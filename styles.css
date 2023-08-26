@@ -1,7 +1,7 @@
 body {
     font-family: 'Roboto', sans-serif;
     background: #211f1d;
-    color: #d9d4d5;
+    color: #f8b92e;
 }
 
 .container {
@@ -33,7 +33,7 @@ body {
 a {
     margin-right: 25px;
     font-size: large;
-    color: #d9d4d5;
+    color: #f8b92e;
     text-decoration: none;
 }
 
