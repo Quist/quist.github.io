@@ -15,10 +15,12 @@ body {
     margin-top: 40px;
     margin-left: 12px;
     margin-right: 12px;
+    display: flex;
+    flex-direction: column;
 }
 
 .header p {
-    text-align: left;
+    text-align: center;
 
 }
 
