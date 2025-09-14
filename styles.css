@@ -16,36 +16,65 @@ body {
     min-height: 100vh;
 }
 
-.header {
-    margin-top: 60px;
-    margin-bottom: 40px;
+.links {
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    gap: 30px;
 }
 
-.header-content {
+.box {
+    display: flex;
+    justify-content: center;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 30px;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.card-content {
     display: flex;
     align-items: center;
     gap: 60px;
 }
 
-.header-text {
+.intro-text {
     flex: 1;
 }
 
-.header h1 {
+.card h1 {
     font-size: 2.5rem;
     font-weight: 600;
     margin: 0 0 0.5rem 0;
     color: #ffffff;
 }
 
-.header .role {
+.card h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin: 0 0 1.5rem 0;
+    color: #ffffff;
+}
+
+.card .role {
     font-size: 1.2rem;
     font-weight: 400;
     color: #cccccc;
     margin: 0 0 1.5rem 0;
 }
 
-.header .description {
+.card .description {
     font-size: 1.1rem;
     font-weight: 300;
     color: #cccccc;
@@ -53,11 +82,11 @@ body {
     max-width: 500px;
 }
 
-.header-photo {
+.intro-photo {
     flex-shrink: 0;
 }
 
-.header-photo img {
+.intro-photo img {
     width: 200px;
     height: 200px;
     border-radius: 50%;
@@ -67,17 +96,13 @@ body {
     cursor: pointer;
 }
 
-.header-photo img:hover {
+.intro-photo img:hover {
     transform: scale(1.05);
     box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
 }
 
-.links {
-    margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-    gap: 30px;
+.main-card {
+    margin-top: 40px;
 }
 
 a {
@@ -98,42 +123,14 @@ a:hover {
     box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
 }
 
-.box {
-    display: flex;
-    justify-content: center;
-}
 
 @media (max-width: 768px) {
     .container {
         padding: 16px;
     }
 
-    .header-content {
-        flex-direction: column;
-        gap: 30px;
-        text-align: center;
-    }
-
-    .header-photo {
-        order: -1;
-    }
-
-    .header-photo img {
-        width: 150px;
-        height: 150px;
-    }
-
-    .header h1 {
-        font-size: 2rem;
-    }
-
-    .header .role {
-        font-size: 1.1rem;
-    }
-
-    .header .description {
-        font-size: 1rem;
-        max-width: none;
+    .main-card {
+        margin-top: 30px;
     }
 
     .links {
@@ -141,6 +138,39 @@ a:hover {
         align-items: center;
         gap: 15px;
     }
+
+    .card {
+        padding: 20px;
+    }
+
+    .card-content {
+        flex-direction: column;
+        gap: 30px;
+        text-align: center;
+    }
+
+    .intro-photo {
+        order: -1;
+    }
+
+    .intro-photo img {
+        width: 150px;
+        height: 150px;
+    }
+
+    .card h1 {
+        font-size: 2rem;
+    }
+
+    .card .role {
+        font-size: 1.1rem;
+    }
+
+    .card .description {
+        font-size: 1rem;
+        max-width: none;
+    }
+
 
     a {
         width: 200px;
