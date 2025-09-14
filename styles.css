@@ -21,6 +21,16 @@ body {
     margin-bottom: 40px;
 }
 
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+}
+
+.header-text {
+    flex: 1;
+}
+
 .header h1 {
     font-size: 2.5rem;
     font-weight: 600;
@@ -31,7 +41,7 @@ body {
 .header .role {
     font-size: 1.2rem;
     font-weight: 400;
-    color: #06b6d4;
+    color: #cccccc;
     margin: 0 0 1.5rem 0;
 }
 
@@ -40,7 +50,26 @@ body {
     font-weight: 300;
     color: #cccccc;
     margin: 0;
-    max-width: 600px;
+    max-width: 500px;
+}
+
+.header-photo {
+    flex-shrink: 0;
+}
+
+.header-photo img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ffffff;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.header-photo img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
 }
 
 .links {
@@ -53,20 +82,20 @@ body {
 
 a {
     font-size: 1rem;
-    color: #06b6d4;
+    color: #ffffff;
     text-decoration: none;
     padding: 8px 16px;
-    border: 1px solid transparent;
+    border: 1px solid #ffffff;
     border-radius: 6px;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     font-weight: 400;
 }
 
 a:hover {
-    color: #ffffff;
-    background: rgba(6, 182, 212, 0.1);
-    border-color: #06b6d4;
-    transform: translateY(-1px);
+    color: #1e1e1e;
+    background: #ffffff;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
 }
 
 .box {
@@ -79,6 +108,21 @@ a:hover {
         padding: 16px;
     }
 
+    .header-content {
+        flex-direction: column;
+        gap: 30px;
+        text-align: center;
+    }
+
+    .header-photo {
+        order: -1;
+    }
+
+    .header-photo img {
+        width: 150px;
+        height: 150px;
+    }
+
     .header h1 {
         font-size: 2rem;
     }
@@ -89,6 +133,7 @@ a:hover {
 
     .header .description {
         font-size: 1rem;
+        max-width: none;
     }
 
     .links {
