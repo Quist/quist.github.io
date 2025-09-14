@@ -101,8 +101,80 @@ body {
     box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
 }
 
-.main-card {
+.cards {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
     margin-top: 40px;
+}
+
+.projects {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.project {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.project:last-child {
+    border-bottom: none;
+}
+
+.project h3 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #ffffff;
+    margin: 0 0 8px 0;
+}
+
+.project p {
+    font-size: 1rem;
+    color: #cccccc;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.approach-items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.approach-item {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.approach-item:last-child {
+    border-bottom: none;
+}
+
+.approach-item strong {
+    font-size: 1.1rem;
+    color: #ffffff;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.approach-item p {
+    font-size: 1rem;
+    color: #cccccc;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.tech-card p {
+    font-size: 1rem;
+    color: #cccccc;
+    margin: 0 0 12px 0;
+    line-height: 1.6;
+}
+
+.tech-card p:last-child {
+    margin-bottom: 0;
 }
 
 a {
@@ -129,14 +201,25 @@ a:hover {
         padding: 16px;
     }
 
-    .main-card {
+    .cards {
         margin-top: 30px;
+        gap: 20px;
     }
 
     .links {
         flex-direction: column;
         align-items: center;
         gap: 15px;
+    }
+
+    .projects,
+    .approach-items {
+        gap: 15px;
+    }
+
+    .project,
+    .approach-item {
+        padding: 12px 0;
     }
 
     .card {
