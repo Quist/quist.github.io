@@ -358,6 +358,14 @@ a:hover {
 
     .card {
         padding: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .card::before {
+        display: none;
     }
 
     .card-content {
@@ -377,20 +385,63 @@ a:hover {
 
     .card h1 {
         font-size: 2rem;
+        color: #ffffff;
+        background: none;
+        -webkit-background-clip: initial;
+        -webkit-text-fill-color: initial;
+        background-clip: initial;
+        text-shadow: none;
+    }
+
+    .card h2 {
+        color: #ffffff;
+        text-shadow: none;
     }
 
     .card .role {
         font-size: 1.1rem;
+        color: #cccccc;
     }
 
     .card .description {
         font-size: 1rem;
         max-width: none;
+        color: #cccccc;
+    }
+
+    .project p,
+    .approach-item p,
+    .exploring-item p,
+    .personality-card p,
+    .tech-card p {
+        color: #cccccc;
+    }
+
+    .project h3,
+    .approach-item strong,
+    .exploring-item strong {
+        color: #ffffff;
+    }
+
+    .cta-text {
+        font-size: 1rem;
+        color: #ffffff;
     }
 
 
     a {
         width: 200px;
         text-align: center;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: none;
+        color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    a:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 }
