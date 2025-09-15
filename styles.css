@@ -18,10 +18,24 @@ body {
 
 .links {
     margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
+    text-align: center;
+}
+
+.cta-section {
+    margin-bottom: 20px;
+}
+
+.cta-text {
+    font-size: 1.1rem;
+    color: #ffffff;
+    margin: 0;
+    font-weight: 400;
+}
+
+.link-buttons {
     display: flex;
     gap: 30px;
+    justify-content: center;
 }
 
 .box {
@@ -177,6 +191,46 @@ body {
     margin-bottom: 0;
 }
 
+.exploring-items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.exploring-item {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.exploring-item:last-child {
+    border-bottom: none;
+}
+
+.exploring-item strong {
+    font-size: 1.1rem;
+    color: #ffffff;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.exploring-item p {
+    font-size: 1rem;
+    color: #cccccc;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.personality-card p {
+    font-size: 1rem;
+    color: #cccccc;
+    margin: 0 0 15px 0;
+    line-height: 1.6;
+}
+
+.personality-card p:last-child {
+    margin-bottom: 0;
+}
+
 .footer {
     margin-top: 60px;
     padding: 20px 0;
@@ -220,19 +274,25 @@ a:hover {
         gap: 20px;
     }
 
-    .links {
+    .link-buttons {
         flex-direction: column;
         align-items: center;
         gap: 15px;
     }
 
+    .cta-text {
+        font-size: 1rem;
+    }
+
     .projects,
-    .approach-items {
+    .approach-items,
+    .exploring-items {
         gap: 15px;
     }
 
     .project,
-    .approach-item {
+    .approach-item,
+    .exploring-item {
         padding: 12px 0;
     }
 
