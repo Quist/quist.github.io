@@ -436,12 +436,17 @@ a:hover {
         backdrop-filter: none;
         color: #ffffff;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: none;
+        transform: none;
     }
 
-    a:hover {
-        background: rgba(255, 255, 255, 0.2);
+    a:hover,
+    a:active,
+    a:focus {
+        background: rgba(255, 255, 255, 0.15);
         color: #ffffff;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        transform: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: none;
     }
 }
