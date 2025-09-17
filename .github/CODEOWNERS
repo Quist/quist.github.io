@@ -1,0 +1,10 @@
+# Default ownership for all files
+* @Quist
+
+# GitHub configuration files
+.github/ @Quist
+
+# Core website files  
+index.html @Quist
+styles.css @Quist
+CLAUDE.md @Quist
