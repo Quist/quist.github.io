@@ -15,12 +15,21 @@ This is a static HTML/CSS website with no build process or dependencies. Changes
 
 ## Deployment
 
-The site appears to be hosted via GitHub Pages (quist.github.io), so changes pushed to the master branch will be automatically deployed.
+**Production:** The site is hosted via GitHub Pages (quist.github.io). Changes pushed to the master branch are automatically deployed.
+
+**PR Previews:** Pull requests automatically trigger a preview build workflow:
+- HTML/CSS validation 
+- Preview build creation with PR indicators
+- Downloadable artifact with testing instructions
+- Automated PR comments with links
+
+See `.github/workflows/pr-validation.yml` for the complete workflow.
 
 ## Design System
 
-- Font: Roboto (loaded from Google Fonts)
-- Theme colors: Dark background (#211f1d), golden yellow accent (#f8b92e)
+- Font: Inter (loaded from Google Fonts) 
+- Theme colors: Dark gradient background (#1a1a1a to #2a2a2a), white text (#ffffff)
+- Accent colors: Orange/yellow gradients (#f39c12, #e67e22)
 - Layout: Centered container (max-width: 700px) with flexbox
-- Navigation: Horizontal links for GitHub, LinkedIn, and email
-- Hover effects: Font size increase and 1s transition on links
+- Cards: Glass morphism effect with backdrop-filter
+- Navigation: Horizontal link buttons with hover effects
