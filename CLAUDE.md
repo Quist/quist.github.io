@@ -2,25 +2,40 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview
+## Language Instructions
 
-This is a personal portfolio website for Joakim Lindquister hosted on GitHub Pages. It's a simple static site with two main files:
+**Bruk norsk (bokmål) for alle interaksjoner i dette repositoryet:**
+- Pull request-beskrivelser skal skrives på norsk
+- Commit-meldinger skal være på norsk
+- Kommentarer og forslag skal være på norsk
+- Kode-review tilbakemeldinger skal være på norsk
+- Progress reports skal være på norsk
 
-- `index.html` - Single page with personal introduction and navigation links
-- `styles.css` - Styling with dark theme (#211f1d background, #f8b92e accent color)
+**Eksempel på fraser å bruke:**
+- "Legger til" i stedet for "Adding"
+- "Fikser" i stedet for "Fixing"  
+- "Oppdaterer" i stedet for "Updating"
+- "Forbedrer" i stedet for "Improving"
 
-## Development
+## Prosjektoversikt
 
-This is a static HTML/CSS website with no build process or dependencies. Changes can be made directly to the files and will be reflected immediately when the site is served.
+Dette er en personlig porteføljenettsiden for Joakim Lindquister hostet på GitHub Pages. Det er en enkel statisk side med to hovedfiler:
 
-## Deployment
+- `index.html` - Enkelt side med personlig introduksjon og navigasjonslenker
+- `styles.css` - Styling med mørkt tema (#211f1d bakgrunn, #f8b92e aksentfarge)
 
-The site appears to be hosted via GitHub Pages (quist.github.io), so changes pushed to the master branch will be automatically deployed.
+## Utvikling
 
-## Design System
+Dette er en statisk HTML/CSS nettside uten build-prosess eller avhengigheter. Endringer kan gjøres direkte i filene og vil reflekteres umiddelbart når siden serveres.
 
-- Font: Roboto (loaded from Google Fonts)
-- Theme colors: Dark background (#211f1d), golden yellow accent (#f8b92e)
-- Layout: Centered container (max-width: 700px) with flexbox
-- Navigation: Horizontal links for GitHub, LinkedIn, and email
-- Hover effects: Font size increase and 1s transition on links
+## Distribusjon
+
+Siden ser ut til å være hostet via GitHub Pages (quist.github.io), så endringer som pushes til master-branchen vil bli automatisk distribuert.
+
+## Designsystem
+
+- Font: Roboto (lastet fra Google Fonts)
+- Temafarger: Mørk bakgrunn (#211f1d), gullgul aksentfarge (#f8b92e)
+- Layout: Sentrert container (max-width: 700px) med flexbox
+- Navigasjon: Horisontale lenker for GitHub, LinkedIn og e-post
+- Hover-effekter: Fontstørrelse økning og 1s overgang på lenker
