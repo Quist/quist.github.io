@@ -20,10 +20,9 @@ This is a static website with no build process required. Simply edit the files:
 
 When you create a pull request, the following happens automatically:
 
-1. **Validation**: HTML and CSS are validated for basic syntax
-2. **Build**: A preview version is created with PR indicators
-3. **Artifact**: The preview is uploaded as a downloadable artifact
-4. **Comment**: A bot comment provides download link and testing instructions
+1. **Build**: A preview version is created with PR indicators
+2. **Artifact**: The preview is uploaded as a downloadable artifact
+3. **Comment**: A bot comment provides download link and testing instructions
 
 ### Testing Your Changes
 
@@ -49,7 +48,7 @@ When you create a pull request, the following happens automatically:
 ├── CLAUDE.md           # Development guidance
 ├── .github/
 │   ├── workflows/
-│   │   └── pr-validation.yml  # PR preview automation
+│   │   └── pr-validation.yml  # PR preview deployment
 │   └── copilot-instructions.md
 └── README.md           # This file
 ```
