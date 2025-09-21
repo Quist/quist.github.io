@@ -51,23 +51,27 @@ jobs:
           git commit -m "Deploy PR #${{ github.event.pull_request.number }} preview"
           git push origin $PREVIEW_BRANCH
 
-          echo "Preview deployed to: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/tree/$PREVIEW_BRANCH"
+          echo "Preview branch created: $PREVIEW_BRANCH"
 
       - name: Comment PR with preview link
         uses: actions/github-script@v7
         with:
           script: |
             const prNumber = context.payload.pull_request.number;
-            const previewUrl = `https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/tree/pr-preview-${prNumber}`;
+            const previewUrl = `https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}`;
 
             const comment = `🚀 **PR Preview Deployed!**
 
-            🌐 **Live Preview:** [${previewUrl}](${previewUrl})
+            📁 **Preview Branch:** \`pr-preview-${prNumber}\`
+            🔗 **GitHub Branch:** [Se endringer](https://github.com/${{ github.repository }}/tree/pr-preview-${prNumber})
 
             > **Hvordan teste denne PR-en:**
-            > 1. Klikk på preview-lenken ovenfor
-            > 2. Sammenlign med live side: https://${{ github.repository_owner }}.github.io
-            > 3. Test funksjonaliteten i nettleseren din
+            > 1. Gå til repository Settings → Pages
+            > 2. Endre source til branch: \`pr-preview-${prNumber}\`
+            > 3. Åpne GitHub Pages URL når den er klar
+            > 4. Sammenlign med live side: https://${{ github.repository_owner }}.github.io
+
+            💡 **Alternativt:** Last ned filene fra branch og test lokalt
 
             🔄 Preview oppdateres automatisk med nye commits.
             🧹 Preview-branch slettes automatisk når PR lukkes.
