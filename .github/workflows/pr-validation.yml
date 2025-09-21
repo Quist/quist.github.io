@@ -3,15 +3,17 @@ name: Deploy PR Preview
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, closed]
     branches: [master]
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
+  pages: write
 
 jobs:
   deploy-preview:
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
 
     steps:
@@ -20,44 +22,55 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Create preview build
+      - name: Create and deploy preview to GitHub Pages
         run: |
-          # Create a build directory
-          mkdir -p preview-build
-          cp index.html preview-build/
-          cp styles.css preview-build/
+          # Set up git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Add a preview indicator to the build
-          sed -i '/<title>/a\<!-- PR Preview Build #${{ github.event.pull_request.number }} -->' preview-build/index.html
+          # Create preview branch
+          PREVIEW_BRANCH="pr-preview-${{ github.event.pull_request.number }}"
 
-          echo "Preview build created successfully"
-          ls -la preview-build/
+          # Check if branch exists and delete it
+          if git ls-remote --heads origin $PREVIEW_BRANCH | grep -q $PREVIEW_BRANCH; then
+            git push origin --delete $PREVIEW_BRANCH
+          fi
 
-      - name: Upload preview artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: pr-preview-${{ github.event.pull_request.number }}
-          path: preview-build/
-          retention-days: 7
+          # Create new orphan branch for preview
+          git checkout --orphan $PREVIEW_BRANCH
+          git rm -rf .
+
+          # Copy files for preview
+          git checkout ${{ github.event.pull_request.head.sha }} -- index.html styles.css
+
+          # Add preview indicator
+          sed -i '/<title>/a\<!-- PR Preview Build #${{ github.event.pull_request.number }} -->' index.html
+
+          # Commit and push
+          git add .
+          git commit -m "Deploy PR #${{ github.event.pull_request.number }} preview"
+          git push origin $PREVIEW_BRANCH
+
+          echo "Preview deployed to: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/tree/$PREVIEW_BRANCH"
 
       - name: Comment PR with preview link
         uses: actions/github-script@v7
         with:
           script: |
             const prNumber = context.payload.pull_request.number;
-            const runId = context.runId;
-            const artifactUrl = `https://github.com/${{ github.repository }}/actions/runs/${runId}`;
+            const previewUrl = `https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/tree/pr-preview-${prNumber}`;
 
             const comment = `🚀 **PR Preview Deployed!**
 
-            📦 **Download Preview:** [Preview Build Artifact](${artifactUrl})
+            🌐 **Live Preview:** [${previewUrl}](${previewUrl})
 
-            > **How to test this PR:**
-            > 1. Click the artifact link above and download the preview
-            > 2. Extract the ZIP file and open \`index.html\` in your browser
-            > 3. Compare with live site: https://${{ github.repository_owner }}.github.io
+            > **Hvordan teste denne PR-en:**
+            > 1. Klikk på preview-lenken ovenfor
+            > 2. Sammenlign med live side: https://${{ github.repository_owner }}.github.io
+            > 3. Test funksjonaliteten i nettleseren din
 
-            🔄 This preview updates automatically with new commits.
+            🔄 Preview oppdateres automatisk med nye commits.
+            🧹 Preview-branch slettes automatisk når PR lukkes.
 
             _Deployed: ${new Date().toISOString()}_`;
 
@@ -87,3 +100,23 @@ jobs:
                 body: comment
               });
             }
+
+  cleanup-preview:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Delete preview branch
+        run: |
+          PREVIEW_BRANCH="pr-preview-${{ github.event.pull_request.number }}"
+
+          # Check if branch exists and delete it
+          if git ls-remote --heads origin $PREVIEW_BRANCH | grep -q $PREVIEW_BRANCH; then
+            git push origin --delete $PREVIEW_BRANCH
+            echo "Deleted preview branch: $PREVIEW_BRANCH"
+          else
+            echo "Preview branch $PREVIEW_BRANCH does not exist"
+          fi
