@@ -2,34 +2,40 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview
+## Language Instructions
 
-This is a personal portfolio website for Joakim Lindquister hosted on GitHub Pages. It's a simple static site with two main files:
+**Bruk norsk (bokmål) for alle interaksjoner i dette repositoryet:**
+- Pull request-beskrivelser skal skrives på norsk
+- Commit-meldinger skal være på norsk
+- Kommentarer og forslag skal være på norsk
+- Kode-review tilbakemeldinger skal være på norsk
+- Progress reports skal være på norsk
 
-- `index.html` - Single page with personal introduction and navigation links
-- `styles.css` - Styling with dark theme (#211f1d background, #f8b92e accent color)
+**Eksempel på fraser å bruke:**
+- "Legger til" i stedet for "Adding"
+- "Fikser" i stedet for "Fixing"  
+- "Oppdaterer" i stedet for "Updating"
+- "Forbedrer" i stedet for "Improving"
 
-## Development
+## Prosjektoversikt
 
-This is a static HTML/CSS website with no build process or dependencies. Changes can be made directly to the files and will be reflected immediately when the site is served.
+Dette er en personlig porteføljenettsiden for Joakim Lindquister hostet på GitHub Pages. Det er en enkel statisk side med to hovedfiler:
 
-## Deployment
+- `index.html` - Enkelt side med personlig introduksjon og navigasjonslenker
+- `styles.css` - Styling med mørkt tema (#211f1d bakgrunn, #f8b92e aksentfarge)
 
-**Production:** The site is hosted via GitHub Pages (quist.github.io). Changes pushed to the master branch are automatically deployed.
+## Utvikling
 
-**PR Previews:** Pull requests automatically trigger a preview build workflow:
-- HTML/CSS validation 
-- Preview build creation with PR indicators
-- Downloadable artifact with testing instructions
-- Automated PR comments with links
+Dette er en statisk HTML/CSS nettside uten build-prosess eller avhengigheter. Endringer kan gjøres direkte i filene og vil reflekteres umiddelbart når siden serveres.
 
-See `.github/workflows/pr-validation.yml` for the complete workflow.
+## Distribusjon
 
-## Design System
+Siden ser ut til å være hostet via GitHub Pages (quist.github.io), så endringer som pushes til master-branchen vil bli automatisk distribuert.
 
-- Font: Inter (loaded from Google Fonts) 
-- Theme colors: Dark gradient background (#1a1a1a to #2a2a2a), white text (#ffffff)
-- Accent colors: Orange/yellow gradients (#f39c12, #e67e22)
-- Layout: Centered container (max-width: 700px) with flexbox
-- Cards: Glass morphism effect with backdrop-filter
-- Navigation: Horizontal link buttons with hover effects
+## Designsystem
+
+- Font: Roboto (lastet fra Google Fonts)
+- Temafarger: Mørk bakgrunn (#211f1d), gullgul aksentfarge (#f8b92e)
+- Layout: Sentrert container (max-width: 700px) med flexbox
+- Navigasjon: Horisontale lenker for GitHub, LinkedIn og e-post
+- Hover-effekter: Fontstørrelse økning og 1s overgang på lenker

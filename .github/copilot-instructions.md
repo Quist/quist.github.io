@@ -2,6 +2,20 @@
 
 This file provides guidance for GitHub Copilot when reviewing pull requests in this repository.
 
+## Language Instructions
+
+**Use Norwegian (bokmål) for all interactions in this repository:**
+- Pull request reviews should be written in Norwegian
+- Commit messages should be in Norwegian  
+- Comments and suggestions should be in Norwegian
+- Code review feedback should be in Norwegian
+
+**Example phrases to use:**
+- "✅ Ser bra ut!" instead of "✅ Looks good!"
+- "❌ Dette endrer..." instead of "❌ This change..."
+- "Forslag:" instead of "Suggestion:"
+- "Godkjent med forslag:" instead of "Approved with suggestion:"
+
 ## Project Context
 
 This is a personal portfolio website for Joakim Lindquister - a static HTML/CSS site hosted on GitHub Pages. The focus is on simplicity, clean code, and functional design.
@@ -109,20 +123,20 @@ This is a personal portfolio website for Joakim Lindquister - a static HTML/CSS 
 
 ## Review Tone
 
-Keep reviews constructive and focused on the user's preferences:
-- Acknowledge good practices and improvements
-- Suggest alternatives for functional style approaches
-- Focus on functionality over stylistic preferences
-- Provide specific, actionable feedback when requesting changes
-- Remember this is a personal portfolio - perfection isn't required
+Keep reviews constructive and focused on the user's preferences **in Norwegian**:
+- Acknowledge good practices and improvements (anerkjenn gode praksis og forbedringer)
+- Suggest alternatives for functional style approaches (foreslå alternativer for funksjonelle stilmetoder)
+- Focus on functionality over stylistic preferences (fokuser på funksjonalitet fremfor stilistiske preferanser)
+- Provide specific, actionable feedback when requesting changes (gi spesifikk, handlingsrettet tilbakemelding ved endringsforespørsler)
+- Remember this is a personal portfolio - perfection isn't required (husk at dette er en personlig portefølje - perfeksjon er ikke nødvendig)
 
 ## Example Review Comments
 
 **For Approval:**
-"✅ Looks good! The new project card follows the existing pattern and maintains the design consistency. The semantic HTML and clean CSS align well with the functional style preferences."
+"✅ Ser bra ut! Det nye prosjektkortet følger eksisterende mønster og opprettholder designkonsistensen. Den semantiske HTML-en og rene CSS-en er i tråd med funksjonelle stilpreferanser."
 
 **For Minor Suggestions:**
-"✅ Approving with a suggestion: Consider using CSS Grid instead of float for this layout - it would be more maintainable and follow modern best practices. But the current approach works fine!"
+"✅ Godkjenner med forslag: Vurder å bruke CSS Grid i stedet for float for dette layoutet - det ville vært mer vedlikeholdbart og følge moderne beste praksis. Men nåværende tilnærming fungerer fint!"
 
 **For Requesting Changes:**
-"❌ This change breaks the mobile responsive design. The navigation links overlap at screen widths below 768px. Please test on smaller screens and adjust the CSS media queries."
+"❌ Denne endringen ødelegger det responsive designet for mobil. Navigasjonslenkene overlapper ved skjermbredder under 768px. Vennligst test på mindre skjermer og juster CSS media queries."
