@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"
+          type="text/css"
+          href="styles.css"/>
+    <title>Gjestebok - Joakim Lindquister</title>
+    <meta name="description" content="Legg igjen en melding i gjesteboken til Joakim Lindquister">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="Gjestebok - Joakim Lindquister">
+    <meta property="og:description" content="Legg igjen en melding i gjesteboken">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <nav class="links">
+        <div class="cta-section">
+            <p class="cta-text">📝 Velkommen til gjesteboken!</p>
+        </div>
+        <div class="link-buttons">
+            <div class="box">
+                <a href="index.html">← Tilbake til hjem</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="cards">
+        <div class="card guestbook-form-card">
+            <h2>✍️ Skriv en melding</h2>
+            <form id="guestbook-form" class="guestbook-form">
+                <div class="form-group">
+                    <label for="name">Navn:</label>
+                    <input type="text" id="name" name="name" required maxlength="50" placeholder="Ditt navn">
+                </div>
+                <div class="form-group">
+                    <label for="message">Melding:</label>
+                    <textarea id="message" name="message" required maxlength="500" rows="4" placeholder="Skriv din melding her..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">📝 Send melding</button>
+            </form>
+        </div>
+
+        <div class="card guestbook-messages-card">
+            <h2>💬 Meldinger fra gjester</h2>
+            <div id="messages-container" class="messages-container">
+                <div class="no-messages">
+                    <p>Ingen meldinger ennå. Vær den første til å skrive! ✨</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Built with ✨ and Claude Code</p>
+    </footer>
+</div>
+
+<script>
+// Gjestebok funksjonalitet
+class Guestbook {
+    constructor() {
+        this.storageKey = 'guestbook-messages';
+        this.form = document.getElementById('guestbook-form');
+        this.messagesContainer = document.getElementById('messages-container');
+        
+        this.init();
+    }
+    
+    init() {
+        this.loadMessages();
+        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+    }
+    
+    handleSubmit(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this.form);
+        const name = formData.get('name').trim();
+        const message = formData.get('message').trim();
+        
+        if (!name || !message) {
+            alert('Vennligst fyll ut alle feltene');
+            return;
+        }
+        
+        const newMessage = {
+            id: Date.now(),
+            name: name,
+            message: message,
+            timestamp: new Date().toISOString()
+        };
+        
+        this.addMessage(newMessage);
+        this.form.reset();
+        
+        // Vis suksessmelding
+        this.showSuccessMessage();
+    }
+    
+    addMessage(message) {
+        const messages = this.getMessages();
+        messages.unshift(message); // Legg til øverst
+        this.saveMessages(messages);
+        this.renderMessages();
+    }
+    
+    getMessages() {
+        const stored = localStorage.getItem(this.storageKey);
+        return stored ? JSON.parse(stored) : [];
+    }
+    
+    saveMessages(messages) {
+        localStorage.setItem(this.storageKey, JSON.stringify(messages));
+    }
+    
+    loadMessages() {
+        this.renderMessages();
+    }
+    
+    renderMessages() {
+        const messages = this.getMessages();
+        
+        if (messages.length === 0) {
+            this.messagesContainer.innerHTML = `
+                <div class="no-messages">
+                    <p>Ingen meldinger ennå. Vær den første til å skrive! ✨</p>
+                </div>
+            `;
+            return;
+        }
+        
+        const messagesHtml = messages.map(message => `
+            <div class="message" data-id="${message.id}">
+                <div class="message-header">
+                    <span class="message-name">👤 ${this.escapeHtml(message.name)}</span>
+                    <span class="message-date">${this.formatDate(message.timestamp)}</span>
+                </div>
+                <div class="message-content">
+                    ${this.escapeHtml(message.message)}
+                </div>
+            </div>
+        `).join('');
+        
+        this.messagesContainer.innerHTML = messagesHtml;
+    }
+    
+    formatDate(timestamp) {
+        const date = new Date(timestamp);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 0) {
+            return 'I dag ' + date.toLocaleTimeString('no', { hour: '2-digit', minute: '2-digit' });
+        } else if (diffDays === 1) {
+            return 'I går ' + date.toLocaleTimeString('no', { hour: '2-digit', minute: '2-digit' });
+        } else if (diffDays < 7) {
+            return diffDays + ' dager siden';
+        } else {
+            return date.toLocaleDateString('no');
+        }
+    }
+    
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    showSuccessMessage() {
+        const button = this.form.querySelector('.submit-btn');
+        const originalText = button.textContent;
+        button.textContent = '✅ Sendt!';
+        button.disabled = true;
+        
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.disabled = false;
+        }, 2000);
+    }
+}
+
+// Initialiser gjestebok når siden lastes
+document.addEventListener('DOMContentLoaded', () => {
+    new Guestbook();
+});
+</script>
+</body>
+</html>
