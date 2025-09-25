@@ -593,3 +593,14 @@ a:hover {
     white-space: pre-wrap;
     word-wrap: break-word;
 }
+
+.database-status {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    margin-top: 15px;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.03);
+}

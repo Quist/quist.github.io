@@ -15,6 +15,61 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK eller Mock for demo -->
+    <script>
+        // Mock Firebase implementasjon for demo
+        // I produksjon ville dette blitt erstattet med ekte Firebase config
+        class MockFirebase {
+            constructor() {
+                this.data = JSON.parse(localStorage.getItem('mock-firebase-guestbook') || '{}');
+                this.listeners = [];
+            }
+            
+            ref(path) {
+                return {
+                    path: path,
+                    push: (data) => {
+                        const id = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                        this.data[id] = data;
+                        localStorage.setItem('mock-firebase-guestbook', JSON.stringify(this.data));
+                        this.notifyListeners();
+                        return Promise.resolve();
+                    },
+                    on: (eventType, callback) => {
+                        this.listeners.push(callback);
+                        // Kall callback umiddelbart med eksisterende data
+                        setTimeout(() => {
+                            callback({
+                                val: () => Object.keys(this.data).length > 0 ? this.data : null
+                            });
+                        }, 100);
+                    },
+                    off: (callback) => {
+                        this.listeners = this.listeners.filter(l => l !== callback);
+                    }
+                };
+            }
+            
+            notifyListeners() {
+                this.listeners.forEach(callback => {
+                    callback({
+                        val: () => Object.keys(this.data).length > 0 ? this.data : null
+                    });
+                });
+            }
+        }
+        
+        // Simuler Firebase globals
+        window.mockFirebase = new MockFirebase();
+        window.database = window.mockFirebase;
+        window.firebaseRef = (db, path) => db.ref(path);
+        window.firebasePush = (ref, data) => ref.push(data);
+        window.firebaseOnValue = (ref, callback) => ref.on('value', callback);
+        window.firebaseOff = (ref, callback) => ref.off(callback);
+        
+        console.log('🔥 Mock Firebase aktiv - simulerer delt database med localStorage');
+    </script>
 </head>
 <body>
 <div class="container">
@@ -67,16 +122,61 @@ class Guestbook {
         this.storageKey = 'guestbook-messages';
         this.form = document.getElementById('guestbook-form');
         this.messagesContainer = document.getElementById('messages-container');
+        this.useFirebase = false;
+        this.messagesRef = null;
+        this.firebaseListener = null;
         
         this.init();
     }
     
-    init() {
+    async init() {
+        // Sjekk om Firebase er tilgjengelig
+        await this.initializeFirebase();
+        
         this.loadMessages();
         this.form.addEventListener('submit', (e) => this.handleSubmit(e));
     }
     
-    handleSubmit(e) {
+    async initializeFirebase() {
+        try {
+            // Vent litt for at Mock Firebase skal laste inn
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            if (window.database && window.firebaseRef) {
+                this.messagesRef = window.firebaseRef(window.database, 'guestbook-messages');
+                this.useFirebase = true;
+                console.log('✅ Database tilkobling etablert');
+                
+                // Sett opp realtime listener
+                this.setupFirebaseListener();
+            } else {
+                throw new Error('Database ikke tilgjengelig');
+            }
+        } catch (error) {
+            console.warn('⚠️ Database ikke tilgjengelig, bruker localStorage:', error.message);
+            this.useFirebase = false;
+        }
+    }
+    
+    setupFirebaseListener() {
+        if (this.useFirebase && this.messagesRef) {
+            this.firebaseListener = window.firebaseOnValue(this.messagesRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    const messages = Object.keys(data).map(key => ({
+                        id: key,
+                        ...data[key]
+                    })).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                    
+                    this.renderMessages(messages);
+                } else {
+                    this.renderMessages([]);
+                }
+            });
+        }
+    }
+    
+    async handleSubmit(e) {
         e.preventDefault();
         
         const formData = new FormData(this.form);
@@ -89,24 +189,33 @@ class Guestbook {
         }
         
         const newMessage = {
-            id: Date.now(),
             name: name,
             message: message,
             timestamp: new Date().toISOString()
         };
         
-        this.addMessage(newMessage);
-        this.form.reset();
-        
-        // Vis suksessmelding
-        this.showSuccessMessage();
+        try {
+            await this.addMessage(newMessage);
+            this.form.reset();
+            this.showSuccessMessage();
+        } catch (error) {
+            console.error('Feil ved lagring av melding:', error);
+            alert('Kunne ikke sende melding. Prøv igjen senere.');
+        }
     }
     
-    addMessage(message) {
-        const messages = this.getMessages();
-        messages.unshift(message); // Legg til øverst
-        this.saveMessages(messages);
-        this.renderMessages();
+    async addMessage(message) {
+        if (this.useFirebase && this.messagesRef) {
+            // Lagre til Firebase
+            await window.firebasePush(this.messagesRef, message);
+        } else {
+            // Fallback til localStorage
+            const messages = this.getMessages();
+            message.id = Date.now();
+            messages.unshift(message);
+            this.saveMessages(messages);
+            this.renderMessages(messages);
+        }
     }
     
     getMessages() {
@@ -119,16 +228,24 @@ class Guestbook {
     }
     
     loadMessages() {
-        this.renderMessages();
+        if (!this.useFirebase) {
+            // Hvis Firebase ikke er tilgjengelig, bruk localStorage
+            const messages = this.getMessages();
+            this.renderMessages(messages);
+        }
+        // Hvis Firebase brukes, laster den automatisk via listener
     }
     
-    renderMessages() {
-        const messages = this.getMessages();
+    renderMessages(messages = null) {
+        if (messages === null) {
+            messages = this.getMessages();
+        }
         
         if (messages.length === 0) {
             this.messagesContainer.innerHTML = `
                 <div class="no-messages">
                     <p>Ingen meldinger ennå. Vær den første til å skrive! ✨</p>
+                    ${this.useFirebase ? '<p class="database-status">🌐 Delt database aktiv - meldinger deles mellom alle brukere</p>' : '<p class="database-status">💾 Lokal lagring aktiv - meldinger kun synlige for deg</p>'}
                 </div>
             `;
             return;
@@ -146,7 +263,11 @@ class Guestbook {
             </div>
         `).join('');
         
-        this.messagesContainer.innerHTML = messagesHtml;
+        const statusIndicator = this.useFirebase ? 
+            '<div class="database-status">🌐 Meldinger deles mellom alle brukere</div>' : 
+            '<div class="database-status">💾 Meldinger lagres kun lokalt</div>';
+        
+        this.messagesContainer.innerHTML = messagesHtml + statusIndicator;
     }
     
     formatDate(timestamp) {
@@ -188,6 +309,13 @@ class Guestbook {
 // Initialiser gjestebok når siden lastes
 document.addEventListener('DOMContentLoaded', () => {
     new Guestbook();
+});
+
+// Cleanup ved navigering bort fra siden
+window.addEventListener('beforeunload', () => {
+    if (window.guestbook && window.guestbook.firebaseListener) {
+        window.firebaseOff(window.guestbook.messagesRef, window.guestbook.firebaseListener);
+    }
 });
 </script>
 </body>
