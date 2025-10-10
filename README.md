@@ -74,60 +74,15 @@ Supports all modern browsers with CSS Grid and Flexbox support.
 
 Gjesteboken bruker nå Firebase Firestore for persistering og sanntidsoppdatering. Ingen build er nødvendig; SDK lastes fra CDN i `gjestebok.html`.
 
-### 1) Oppsett i Firebase Console
-1. Opprett et Firebase-prosjekt
-2. Aktiver Firestore Database (Native mode)
-3. Legg til en Web App (uten hosting)
-4. Kopier konfigurasjonen (apiKey, authDomain, projectId, osv.)
+### Sikkerhetsregler
 
-### 2) Konfigurer `gjestebok.html`
-Finn `initFirebase()` og erstatt placeholder‑verdier:
+Firestore Security Rules er definert i `firestore.rules` og må deployes til Firebase:
 
-```
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+```bash
+firebase deploy --only firestore:rules
 ```
 
-Meldinger lagres i samlingen `guestbookMessages` med feltene:
-- `name: string (≤ 50)`
-- `message: string (≤ 500)`
-- `createdAt: serverTimestamp()`
-
-### 3) Firestore sikkerhetsregler (anbefalt minimum)
-Tillat lesing for alle, tillat kun opprettelse (ikke oppdatering/sletting), og valider felter og lengder.
-
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /guestbookMessages/{docId} {
-      allow read: if true;
-      allow create: if
-        request.resource.data.keys().hasOnly(["name", "message", "createdAt"]) &&
-        request.resource.data.name is string &&
-        request.resource.data.message is string &&
-        request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 50 &&
-        request.resource.data.message.size() > 0 && request.resource.data.message.size() <= 500 &&
-        request.resource.data.createdAt is timestamp;
-      allow update, delete: if false;
-    }
-  }
-}
-```
-
-Tips:
-- Vurder å aktivere moderat antispam (honeypot er allerede inkludert i skjemaet). For mer robust beskyttelse, bruk f.eks. reCAPTCHA/Turnstile og/eller en enkel mellomtjener.
-- Legg inn indekser i Firestore ved behov. Standard sortering på `createdAt desc` fungerer uten ekstra indeks.
-
-### 4) Lokal testing
-- Åpne `gjestebok.html` direkte i nettleser og test innsending/visning.
-- Konsollen viser eventuelle feil fra Firestore/SDK.
-
-### 5) Deploy
-- Push til `master` → GitHub Pages oppdaterer produksjon.
+Reglene sikrer at:
+- Alle kan lese meldinger
+- Kun gyldige meldinger kan opprettes (navn 1-50 tegn, melding 1-500 tegn)
+- Meldinger kan ikke oppdateres eller slettes via klienten
