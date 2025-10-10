@@ -69,3 +69,20 @@ No build tools required! Simply:
 ## 📱 Browser Support
 
 Supports all modern browsers with CSS Grid and Flexbox support.
+
+## ☁️ Firebase/Firestore for gjestebok
+
+Gjesteboken bruker nå Firebase Firestore for persistering og sanntidsoppdatering. Ingen build er nødvendig; SDK lastes fra CDN i `gjestebok.html`.
+
+### Sikkerhetsregler
+
+Firestore Security Rules er definert i `firestore.rules` og må deployes til Firebase:
+
+```bash
+firebase deploy --only firestore:rules
+```
+
+Reglene sikrer at:
+- Alle kan lese meldinger
+- Kun gyldige meldinger kan opprettes (navn 1-50 tegn, melding 1-500 tegn)
+- Meldinger kan ikke oppdateres eller slettes via klienten
