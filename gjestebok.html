@@ -41,6 +41,11 @@
                     <label for="message">Melding:</label>
                     <textarea id="message" name="message" required maxlength="500" rows="4" placeholder="Skriv din melding her..."></textarea>
                 </div>
+                <!-- Honeypot (skal være tom) -->
+                <div style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">
+                    <label for="website">Nettsted</label>
+                    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                </div>
                 <button type="submit" class="submit-btn">📝 Send melding</button>
             </form>
         </div>
@@ -60,101 +65,117 @@
     </footer>
 </div>
 
-<script>
-// Gjestebok funksjonalitet
+<script type="module">
+// Firebase + Firestore-basert gjestebok
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js';
+import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
+
 class Guestbook {
     constructor() {
-        this.storageKey = 'guestbook-messages';
         this.form = document.getElementById('guestbook-form');
         this.messagesContainer = document.getElementById('messages-container');
-        
+        this.initFirebase();
         this.init();
     }
-    
+
+    initFirebase() {
+        // Fyll inn din egen Firebase-konfig fra Firebase Console
+        const firebaseConfig = {
+            apiKey: "AIzaSyAnTRBovMt9B2dV-MorT3OQEvji2JFBXrg",
+            authDomain: "quister-homepage.firebaseapp.com",
+            projectId: "quister-homepage",
+            storageBucket: "quister-homepage.appspot.com",
+            messagingSenderId: "410861821179",
+            appId: "1:410861821179:web:63be3919cbb196665d645e"
+        };
+        const app = initializeApp(firebaseConfig);
+        this.db = getFirestore(app);
+        this.messagesRef = collection(this.db, 'guestbookMessages');
+    }
+
     init() {
-        this.loadMessages();
+        this.subscribeToMessages();
         this.form.addEventListener('submit', (e) => this.handleSubmit(e));
     }
-    
-    handleSubmit(e) {
+
+    async handleSubmit(e) {
         e.preventDefault();
-        
+
         const formData = new FormData(this.form);
-        const name = formData.get('name').trim();
-        const message = formData.get('message').trim();
-        
+        const name = (formData.get('name') || '').toString().trim();
+        const message = (formData.get('message') || '').toString().trim();
+        const honeypot = (formData.get('website') || '').toString().trim();
+
+        if (honeypot) {
+            // Bot-indikator, ignorer innsendingen lydløst
+            return;
+        }
+
         if (!name || !message) {
             alert('Vennligst fyll ut alle feltene');
             return;
         }
-        
-        const newMessage = {
-            id: Date.now(),
-            name: name,
-            message: message,
-            timestamp: new Date().toISOString()
-        };
-        
-        this.addMessage(newMessage);
-        this.form.reset();
-        
-        // Vis suksessmelding
-        this.showSuccessMessage();
+
+        if (name.length > 50 || message.length > 500) {
+            alert('Ugyldig lengde på felter');
+            return;
+        }
+
+        try {
+            await addDoc(this.messagesRef, {
+                name,
+                message,
+                createdAt: serverTimestamp()
+            });
+            this.form.reset();
+            this.showSuccessMessage();
+        } catch (err) {
+            console.error('Kunne ikke lagre melding:', err);
+            alert('Kunne ikke lagre meldingen. Prøv igjen.');
+        }
     }
-    
-    addMessage(message) {
-        const messages = this.getMessages();
-        messages.unshift(message); // Legg til øverst
-        this.saveMessages(messages);
-        this.renderMessages();
+
+    subscribeToMessages() {
+        const q = query(this.messagesRef, orderBy('createdAt', 'desc'));
+        onSnapshot(q, (snapshot) => {
+            const items = snapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    name: data.name || '',
+                    message: data.message || '',
+                    timestamp: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString()
+                };
+            });
+            this.renderMessages(items);
+        }, (error) => {
+            console.error('Feil ved henting av meldinger:', error);
+        });
     }
-    
-    getMessages() {
-        const stored = localStorage.getItem(this.storageKey);
-        return stored ? JSON.parse(stored) : [];
-    }
-    
-    saveMessages(messages) {
-        localStorage.setItem(this.storageKey, JSON.stringify(messages));
-    }
-    
-    loadMessages() {
-        this.renderMessages();
-    }
-    
-    renderMessages() {
-        const messages = this.getMessages();
-        
-        if (messages.length === 0) {
+
+    renderMessages(messages) {
+        if (!messages || messages.length === 0) {
             this.messagesContainer.innerHTML = `
-                <div class="no-messages">
+                <div class=\"no-messages\">
                     <p>Ingen meldinger ennå. Vær den første til å skrive! ✨</p>
                 </div>
             `;
             return;
         }
-        
+
         const messagesHtml = messages.map(message => `
-            <div class="message" data-id="${message.id}">
-                <div class="message-header">
-                    <span class="message-name">👤 ${this.escapeHtml(message.name)}</span>
-                    <span class="message-date">${this.formatDate(message.timestamp)}</span>
-                </div>
-                <div class="message-content">
-                    ${this.escapeHtml(message.message)}
-                </div>
-            </div>
+            <div class=\"message\" data-id=\"${message.id}\">\n                <div class=\"message-header\">\n                    <span class=\"message-name\">👤 ${this.escapeHtml(message.name)}</span>\n                    <span class=\"message-date\">${this.formatDate(message.timestamp)}</span>\n                </div>\n                <div class=\"message-content\">\n                    ${this.escapeHtml(message.message)}\n                </div>\n            </div>
         `).join('');
-        
+
         this.messagesContainer.innerHTML = messagesHtml;
     }
-    
+
     formatDate(timestamp) {
         const date = new Date(timestamp);
         const now = new Date();
         const diffMs = now - date;
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-        
+
         if (diffDays === 0) {
             return 'I dag ' + date.toLocaleTimeString('no', { hour: '2-digit', minute: '2-digit' });
         } else if (diffDays === 1) {
@@ -165,19 +186,19 @@ class Guestbook {
             return date.toLocaleDateString('no');
         }
     }
-    
+
     escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
     }
-    
+
     showSuccessMessage() {
         const button = this.form.querySelector('.submit-btn');
         const originalText = button.textContent;
         button.textContent = '✅ Sendt!';
         button.disabled = true;
-        
+
         setTimeout(() => {
             button.textContent = originalText;
             button.disabled = false;
@@ -185,7 +206,6 @@ class Guestbook {
     }
 }
 
-// Initialiser gjestebok når siden lastes
 document.addEventListener('DOMContentLoaded', () => {
     new Guestbook();
 });
