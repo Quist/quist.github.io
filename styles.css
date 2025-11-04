@@ -310,8 +310,21 @@ a {
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
+a svg {
+    flex-shrink: 0;
+}
+
+a.active {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.15));
+    border-color: rgba(255, 255, 255, 0.5);
+    pointer-events: none;
+    cursor: default;
+}
 
 a:hover {
     color: #1e1e1e;
