@@ -323,6 +323,7 @@ a.active {
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.15));
     border-color: rgba(255, 255, 255, 0.5);
     pointer-events: none;
+    cursor: default;
 }
 
 a:hover {
