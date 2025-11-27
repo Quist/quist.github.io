@@ -146,15 +146,33 @@
 </div>
 <script>
     (async function() {
+        const CACHE_KEY = 'github_issues_count';
+        const CACHE_TTL = 5 * 60 * 1000; // 5 minutter
+
+        function updateBadge(count) {
+            const badge = document.getElementById('issues-count');
+            if (badge && count > 0) {
+                badge.textContent = '(' + count + ')';
+            }
+        }
+
+        // Sjekk cache først
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+            const { count, timestamp } = JSON.parse(cached);
+            if (Date.now() - timestamp < CACHE_TTL) {
+                updateBadge(count);
+                return;
+            }
+        }
+
         try {
             const response = await fetch('https://api.github.com/repos/quist/quist.github.io/issues?state=open&per_page=100');
             if (response.ok) {
                 const issues = await response.json();
                 const count = issues.length;
-                const badge = document.getElementById('issues-count');
-                if (badge && count > 0) {
-                    badge.textContent = '(' + count + ')';
-                }
+                localStorage.setItem(CACHE_KEY, JSON.stringify({ count, timestamp: Date.now() }));
+                updateBadge(count);
             }
         } catch (e) {
             // Ignorer feil ved henting av issues
