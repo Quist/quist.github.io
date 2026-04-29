@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gjestebok — Joakim Lindquister</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Si hei, etterlat en tanke, eller bare en emoji." />
+  <meta property="og:title" content="Gjestebok — Joakim Lindquister" />
+  <meta property="og:description" content="Si hei, etterlat en tanke, eller bare en emoji." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='oklch(0.965 0.018 85)'/><text x='50' y='58' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='38' fill='oklch(0.50 0.13 35)'>JL</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Caveat:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="s-nav">
+    <div class="s-nav-name">
+      <a href="index.html" class="g-back">← Joakim</a>
+    </div>
+    <nav class="s-nav-links">
+      <a href="index.html#na">Nå</a>
+      <a href="index.html#arbeid">Arbeid</a>
+      <a href="index.html#hei">Si hei</a>
+    </nav>
+  </header>
+
+  <section class="g-hero" data-reveal>
+    <span class="s-eyebrow">— Gjestebok</span>
+    <h1 class="s-h1">Skriv en <em>hilsen</em>.</h1>
+    <p class="g-hero-sub">
+      Si hei, etterlat en tanke, eller bare en emoji.
+      Jeg leser alle, og det er alltid hyggelig å høre fra noen.
+    </p>
+  </section>
+
+  <section class="g-form-sec" data-reveal>
+    <form class="s-gb-form" id="guestbook-form" novalidate>
+      <input type="text" class="s-gb-input" id="gb-name" placeholder="Navn" maxlength="50" required />
+      <textarea class="s-gb-textarea" id="gb-message" placeholder="Skriv noe hyggelig…" rows="4" maxlength="500" required></textarea>
+      <!-- Honeypot -->
+      <div style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
+        <input type="text" id="gb-website" name="website" tabindex="-1" autocomplete="off" />
+      </div>
+      <div class="s-gb-actions">
+        <span class="s-gb-hint">Vises offentlig. Vær snill.</span>
+        <button type="submit" class="s-gb-submit">Legg igjen hilsen →</button>
+      </div>
+      <div class="g-toast" id="gb-toast" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <section class="g-list-sec">
+    <div class="g-list-head" data-reveal>
+      <span class="s-kicker">Tidligere hilsener</span>
+      <span class="g-count" id="gb-count"></span>
+    </div>
+    <ul class="s-gb-list" id="gb-list">
+      <li class="g-empty">Laster hilsener…</li>
+    </ul>
+  </section>
+
+  <footer class="s-foot">
+    <span>Skrevet for hånd i Oslo · 2026</span>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js';
+    import {
+      getFirestore, collection, addDoc, serverTimestamp,
+      query, orderBy, onSnapshot
+    } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
+
+    const app = initializeApp({
+      apiKey:            "AIzaSyAnTRBovMt9B2dV-MorT3OQEvji2JFBXrg",
+      authDomain:        "quister-homepage.firebaseapp.com",
+      projectId:         "quister-homepage",
+      storageBucket:     "quister-homepage.appspot.com",
+      messagingSenderId: "410861821179",
+      appId:             "1:410861821179:web:63be3919cbb196665d645e"
+    });
+
+    const db  = getFirestore(app);
+    const col = collection(db, 'guestbookMessages');
+
+    const form    = document.getElementById('guestbook-form');
+    const list    = document.getElementById('gb-list');
+    const count   = document.getElementById('gb-count');
+    const toast   = document.getElementById('gb-toast');
+    const submit  = form.querySelector('.s-gb-submit');
+
+    const rtf = new Intl.RelativeTimeFormat('nb', { numeric: 'auto' });
+
+    function relativeTime(date) {
+      const diffMs   = date - Date.now();
+      const diffSec  = Math.round(diffMs / 1000);
+      const diffMin  = Math.round(diffSec / 60);
+      const diffHr   = Math.round(diffMin / 60);
+      const diffDay  = Math.round(diffHr  / 24);
+      const diffWeek = Math.round(diffDay / 7);
+      const diffMon  = Math.round(diffDay / 30);
+
+      if (Math.abs(diffSec)  < 60)   return rtf.format(diffSec,  'second');
+      if (Math.abs(diffMin)  < 60)   return rtf.format(diffMin,  'minute');
+      if (Math.abs(diffHr)   < 24)   return rtf.format(diffHr,   'hour');
+      if (Math.abs(diffDay)  < 7)    return rtf.format(diffDay,  'day');
+      if (Math.abs(diffWeek) < 5)    return rtf.format(diffWeek, 'week');
+      return rtf.format(diffMon, 'month');
+    }
+
+    function escapeHtml(str) {
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+
+    function renderEntry(entry, index, isNew = false) {
+      const li = document.createElement('li');
+      li.className = 's-gb-entry';
+      li.dataset.id = entry.id;
+      if (isNew) li.style.transitionDelay = '0ms';
+      else       li.style.transitionDelay = `${(index % 4) * 50}ms`;
+
+      const date = entry.createdAt?.toDate ? entry.createdAt.toDate() : new Date();
+      const rel  = relativeTime(date);
+
+      li.innerHTML = `
+        <div class="s-gb-meta">
+          <span class="s-gb-name">${escapeHtml(entry.name)}</span>
+          <span class="s-gb-date">${rel}</span>
+        </div>
+        <p class="s-gb-text">${escapeHtml(entry.message || '')}</p>
+      `;
+
+      return li;
+    }
+
+    let entries = [];
+
+    const q = query(col, orderBy('createdAt', 'desc'));
+    onSnapshot(q, (snapshot) => {
+      entries = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      if (entries.length === 0) {
+        list.innerHTML = '<li class="g-empty">Ingen hilsener ennå. Vær den første! ✨</li>';
+        count.textContent = '';
+        return;
+      }
+
+      count.textContent = `${entries.length} stykker`;
+      list.innerHTML = '';
+      entries.forEach((entry, i) => {
+        const li = renderEntry(entry, i);
+        list.appendChild(li);
+      });
+
+      // Trigger reveal for visible entries
+      requestAnimationFrame(() => {
+        list.querySelectorAll('.s-gb-entry').forEach(el => {
+          el.setAttribute('data-reveal', '');
+          io.observe(el);
+        });
+      });
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const honeypot = document.getElementById('gb-website').value;
+      if (honeypot) return;
+
+      const name    = document.getElementById('gb-name').value.trim();
+      const message = document.getElementById('gb-message').value.trim();
+
+      if (!name || !message) {
+        toast.textContent = 'Fyll ut navn og melding.';
+        return;
+      }
+
+      submit.disabled = true;
+      toast.textContent = '';
+
+      const optimistic = {
+        id:        `_opt_${Date.now()}`,
+        name,
+        message,
+        createdAt: { toDate: () => new Date() }
+      };
+
+      const li = renderEntry(optimistic, 0, true);
+      li.style.opacity = '0.6';
+      li.setAttribute('data-reveal', '');
+      list.prepend(li);
+      setTimeout(() => li.setAttribute('data-revealed', ''), 16);
+
+      try {
+        await addDoc(col, {
+          name,
+          message,
+          createdAt: serverTimestamp()
+        });
+        form.reset();
+        toast.textContent = 'Takk for hilsenen! 🙌';
+        setTimeout(() => { toast.textContent = ''; }, 4000);
+      } catch (err) {
+        console.error(err);
+        li.remove();
+        toast.textContent = 'Noe gikk galt. Prøv igjen.';
+      } finally {
+        submit.disabled = false;
+      }
+    });
+
+    // Reveal on scroll
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.setAttribute('data-revealed', 'true');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+  </script>
+
+</body>
+</html>
