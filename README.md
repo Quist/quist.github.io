@@ -84,8 +84,11 @@ Gjesteboken bruker nå Firebase Firestore for persistering og sanntidsoppdaterin
 Firestore Security Rules er definert i `firestore.rules` og må deployes til Firebase:
 
 ```bash
-firebase deploy --only firestore:rules
+npx firebase-tools login          # første gang
+npx firebase-tools deploy --only firestore:rules
 ```
+
+Prosjektet (`quister-homepage`) er satt i `.firebaserc`, og `firebase.json` peker på `firestore.rules`.
 
 Reglene sikrer at:
 - Alle kan lese meldinger

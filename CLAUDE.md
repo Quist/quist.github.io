@@ -24,7 +24,7 @@ Dette er en personlig porteføljenettside for Joakim Lindquister hostet på GitH
 - `index.html` - Forsiden med intro, «Nå», prosjekter og kontakt
 - `gjestebok.html` - Gjestebok som lagrer hilsener i Firebase Firestore (SDK lastes fra CDN)
 - `styles.css` - All styling, delt av begge sidene
-- `firestore.rules` - Sikkerhetsregler for gjesteboken (deployes manuelt med `firebase deploy --only firestore:rules`)
+- `firestore.rules` - Sikkerhetsregler for gjesteboken (deployes manuelt med `npx firebase-tools deploy --only firestore:rules`, konfigurert i `firebase.json` og `.firebaserc`)
 - `sitemap.xml`, `robots.txt` - SEO
 - `.github/workflows/pr-validation.yml` - Lager en nedlastbar forhåndsvisning for hver PR
 
