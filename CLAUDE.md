@@ -19,23 +19,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Prosjektoversikt
 
-Dette er en personlig porteføljenettsiden for Joakim Lindquister hostet på GitHub Pages. Det er en enkel statisk side med to hovedfiler:
+Dette er en personlig porteføljenettside for Joakim Lindquister hostet på GitHub Pages. Det er en statisk side uten build-prosess:
 
-- `index.html` - Enkelt side med personlig introduksjon og navigasjonslenker
-- `styles.css` - Styling med mørkt tema (#211f1d bakgrunn, #f8b92e aksentfarge)
+- `index.html` - Forsiden med intro, «Nå», prosjekter og kontakt
+- `gjestebok.html` - Gjestebok som lagrer hilsener i Firebase Firestore (SDK lastes fra CDN)
+- `styles.css` - All styling, delt av begge sidene
+- `firestore.rules` - Sikkerhetsregler for gjesteboken (deployes manuelt med `firebase deploy --only firestore:rules`)
+- `sitemap.xml`, `robots.txt` - SEO
+- `.github/workflows/pr-validation.yml` - Lager en nedlastbar forhåndsvisning for hver PR
 
 ## Utvikling
 
-Dette er en statisk HTML/CSS nettside uten build-prosess eller avhengigheter. Endringer kan gjøres direkte i filene og vil reflekteres umiddelbart når siden serveres.
+Endringer gjøres direkte i filene. Åpne `index.html` i nettleseren for å teste. Metadata og font-lenker i `<head>` er duplisert i begge HTML-filene, så endringer der må gjøres begge steder.
 
 ## Distribusjon
 
-Siden ser ut til å være hostet via GitHub Pages (quist.github.io), så endringer som pushes til master-branchen vil bli automatisk distribuert.
+Endringer som pushes til `master` blir automatisk distribuert via GitHub Pages (quist.github.io).
 
 ## Designsystem
 
-- Font: Roboto (lastet fra Google Fonts)
-- Temafarger: Mørk bakgrunn (#211f1d), gullgul aksentfarge (#f8b92e)
-- Layout: Sentrert container (max-width: 700px) med flexbox
-- Navigasjon: Horisontale lenker for GitHub, LinkedIn og e-post
-- Hover-effekter: Fontstørrelse økning og 1s overgang på lenker
+- Fonter (Google Fonts): Geist (brødtekst), Instrument Serif (overskrifter), JetBrains Mono (etiketter), Caveat (håndskrift-detaljer)
+- Farger: Lyst «papir»-tema definert som oklch-variabler på `body` i `styles.css` (`--bg`, `--paper`, `--fg`, `--muted`, `--line`, `--accent`). Aksentfargen er rustrød.
+- Layout: Seksjoner opptil 1100px brede, tekstblokker smalere
+- Detaljer: Portrett med tape, håndskrevet signatur, kort med lett rotasjon
+- Animasjon: Elementer med `data-reveal` fades inn ved scroll. De skjules bare når `<html>` har klassen `js`, så innholdet vises uten JavaScript. Respekterer `prefers-reduced-motion`.
+- Tekst: Kort og direkte. Unngå floskler og pynt.
