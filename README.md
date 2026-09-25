@@ -4,16 +4,18 @@ A personal portfolio website hosted on GitHub Pages.
 
 ## 🚀 Features
 
-- Clean, modern design with dark theme
-- Responsive layout for all devices
-- Fast loading static HTML/CSS
-- Automated PR previews for testing changes
+- Light, paper-inspired design
+- Responsive layout
+- Guestbook backed by Firebase Firestore
+- Works without JavaScript (animations are progressive enhancement)
+- Automated PR previews
 
 ## 🛠️ Development
 
 This is a static website with no build process required. Simply edit the files:
 
 - `index.html` - Main portfolio page
+- `gjestebok.html` - Guestbook
 - `styles.css` - All styling and layout
 
 ## 📦 PR Preview System
@@ -34,17 +36,20 @@ When you create a pull request, the following happens automatically:
 
 ## 🎨 Design System
 
-- **Font**: Inter (Google Fonts)
-- **Theme**: Dark background (#1a1a1a) with gradient effects
-- **Accent**: Orange/yellow gradients (#f39c12, #e67e22)
-- **Layout**: Centered container (max-width: 700px)
-- **Cards**: Subtle glass morphism effect
+- **Fonts**: Geist, Instrument Serif, JetBrains Mono and Caveat (Google Fonts)
+- **Theme**: Light paper background with a rust-red accent, defined as oklch tokens in `styles.css`
+- **Layout**: Sections up to 1100px wide
 
 ## 📄 File Structure
 
 ```
 ├── index.html          # Main portfolio page
+├── gjestebok.html      # Guestbook (Firebase Firestore)
 ├── styles.css          # All styling
+├── firestore.rules     # Firestore security rules
+├── profile.jpg         # Portrait
+├── sitemap.xml
+├── robots.txt
 ├── CLAUDE.md           # Development guidance
 ├── .github/
 │   ├── workflows/
@@ -84,5 +89,5 @@ firebase deploy --only firestore:rules
 
 Reglene sikrer at:
 - Alle kan lese meldinger
-- Kun gyldige meldinger kan opprettes (navn 1-50 tegn, melding 1-500 tegn)
+- Kun gyldige meldinger kan opprettes (navn 1-50 tegn, melding 1-500 tegn, `createdAt` må være serverens tidspunkt)
 - Meldinger kan ikke oppdateres eller slettes via klienten

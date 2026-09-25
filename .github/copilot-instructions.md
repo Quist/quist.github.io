@@ -82,24 +82,27 @@ This is a personal portfolio website for Joakim Lindquister - a static HTML/CSS 
 - Logical grouping of CSS rules
 
 **Design System Adherence:**
-- Font: Inter (currently used, was Roboto in docs)
-- Colors: Dark theme with light text (#ffffff on dark backgrounds)
-- Layout: Centered container with appropriate margins
+- Fonts: Geist (body), Instrument Serif (headings), JetBrains Mono (labels), Caveat (handwritten details)
+- Colors: Light paper theme defined as oklch tokens on `body` in `styles.css` (`--bg`, `--fg`, `--accent` etc.)
+- Layout: Sections up to 1100px wide, text blocks narrower
 - Hover effects: Smooth transitions and subtle animations
 
 ### Specific to This Project
 
 **File Structure:**
 - `index.html` - Main portfolio page
-- `styles.css` - All styling (no CSS frameworks)
+- `gjestebok.html` - Guestbook backed by Firebase Firestore
+- `styles.css` - All styling (no CSS frameworks), shared by both pages
+- `firestore.rules` - Firestore security rules for the guestbook
 - `CLAUDE.md` - Development guidance (update if needed)
 
 **Key Features to Preserve:**
 - Personal introduction and photo
 - Work experience and projects section
 - Contact links (GitHub, LinkedIn, Email)
-- Dark theme with gradient background
-- Card-based layout with subtle effects
+- Guestbook links in the nav and teaser section
+- Light paper theme with tape and handwriting details
+- Content must stay visible without JavaScript (reveal animations only apply under `.js`)
 - Mobile responsiveness
 
 ## Auto-Approval Guidelines

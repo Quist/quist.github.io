@@ -10,7 +10,7 @@ service cloud.firestore {
         request.resource.data.message is string &&
         request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 50 &&
         request.resource.data.message.size() > 0 && request.resource.data.message.size() <= 500 &&
-        request.resource.data.createdAt is timestamp;
+        request.resource.data.createdAt == request.time;
       allow update, delete: if false;
     }
   }

@@ -24,8 +24,7 @@ jobs:
         run: |
           # Create a build directory
           mkdir -p preview-build
-          cp index.html preview-build/
-          cp styles.css preview-build/
+          cp *.html *.css *.jpg robots.txt sitemap.xml preview-build/
 
           # Add a preview indicator to the build
           sed -i '/<title>/a\<!-- PR Preview Build #${{ github.event.pull_request.number }} -->' preview-build/index.html
